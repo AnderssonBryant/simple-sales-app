@@ -131,18 +131,6 @@ with tab3:
     sales_df = get_sales_report(start_date, end_date)
     detailed_df = get_detailed_sales(start_date, end_date)
 
-    summary_df = (
-    sales_df
-    .merge(menu, on="product_code", how="left")
-    .groupby("product_name", as_index=False)
-    .agg({
-        "qty": "sum",
-        "total": "sum"
-    }))
-
-    # Drop products with zero sales
-    summary_df = summary_df[summary_df["qty"] > 0]
-
     if sales_df.empty:
         st.info("No sales data for selected period")
     else:
@@ -154,7 +142,7 @@ with tab3:
 
     if not sales_df.empty:
         pdf_bytes = generate_sales_summary_pdf(
-        summary_df,
+        sales_df,
         start_date,
         end_date
     )
