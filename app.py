@@ -5,7 +5,7 @@ from backend.menu import load_menu
 from backend.sales import create_bulk_daily_sales, save_bulk_daily_sales, get_sales_history, get_detailed_sales
 from backend.expenses import add_expense, get_expense_history
 from backend.cash import  get_cash_balance
-from backend.pdf_export import generate_detailed_sales_pdf
+from backend.pdf_export import generate_detailed_sales_pdf, generate_sales_summary_pdf
 from backend.reports import get_sales_report,get_cashflow_report,get_expense_report, get_sales_report_with_total
 import os
 
@@ -131,6 +131,18 @@ with tab3:
     sales_df = get_sales_report(start_date, end_date)
     detailed_df = get_detailed_sales(start_date, end_date)
 
+    summary_df = (
+    sales_df
+    .merge(menu, on="product_code", how="left")
+    .groupby("product_name", as_index=False)
+    .agg({
+        "qty": "sum",
+        "total": "sum"
+    }))
+
+    # Drop products with zero sales
+    summary_df = summary_df[summary_df["qty"] > 0]
+
     if sales_df.empty:
         st.info("No sales data for selected period")
     else:
@@ -141,8 +153,8 @@ with tab3:
         )
 
     if not sales_df.empty:
-        pdf_bytes = generate_detailed_sales_pdf(
-        detailed_df,
+        pdf_bytes = generate_sales_summary_pdf(
+        summary_df,
         start_date,
         end_date
     )
