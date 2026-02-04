@@ -15,7 +15,7 @@ st.set_page_config(
     layout="wide"
 )
 
-st.title("☕ Coffee Sales & Cashflow")
+st.title("Coffee Sales & Cashflow")
 
 tab1, tab2, tab3, tab4 = st.tabs(["Sales", "Expenses","Reports","Charts"])
 
@@ -23,7 +23,7 @@ tab1, tab2, tab3, tab4 = st.tabs(["Sales", "Expenses","Reports","Charts"])
 with tab1:
     menu = load_menu()
 
-    st.header("📥 Daily Sales Input")
+    st.header("Daily Sales Input")
 
     sale_date = st.date_input("Sale Date", value=date.today())
 
@@ -40,13 +40,13 @@ with tab1:
         )
         qty_by_product[row["product_code"]] = qty
 
-    if st.button("💾 Save Daily Sales"):
+    if st.button("Save Daily Sales"):
         sales = create_bulk_daily_sales(qty_by_product, sale_date)
         save_bulk_daily_sales(sales)
         st.success("Daily sales saved (auto-updated if existed)")
 
     st.divider()
-    st.header("📜 Sales History")
+    st.header("Sales History")
 
     history_df = get_sales_history()
 
@@ -82,11 +82,11 @@ with tab1:
 # ---------------- EXPENSES ----------------
 with tab2:
 
-    st.header("💰 Cash Balance")
+    st.header("Cash Balance")
     balance = get_cash_balance()
     st.metric("Current Cash Balance", f"Rp {balance:,}")
 
-    st.header("💸 Expenses")
+    st.header("Expenses")
 
     expense_date = st.date_input("Expense Date", date.today())
     category = st.text_input("Category")
@@ -116,7 +116,7 @@ with tab3:
     st.divider()
 
     # -------- SALES REPORT --------
-    st.subheader("🧾 Sales Report")
+    st.subheader("Sales Report")
 
     sales_df, total_qty, total_sales = get_sales_report_with_total(start_date, end_date)
 
@@ -185,7 +185,7 @@ with tab3:
 with tab4:
     
     st.header("Charts")
-    st.subheader("📅 Chart Date Range")
+    st.subheader("Chart Date Range")
 
     start_date, end_date = st.date_input(
         "Select period",
@@ -196,7 +196,7 @@ with tab4:
     sales_df["date"] = pd.to_datetime(sales_df["date"]).dt.date
 
     with st.container(border=True):
-        st.subheader("📈 Sales Trend")
+        st.subheader("Sales Trend")
 
         trend_df = (
             sales_df
@@ -210,7 +210,7 @@ with tab4:
         )
 
     with st.container(border=True):
-        st.subheader("📊 Sales Distribution")
+        st.subheader("Sales Distribution")
         dist_df = (
         sales_df
         .groupby("product_name", as_index=False)["qty"]
